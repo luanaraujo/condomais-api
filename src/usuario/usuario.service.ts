@@ -57,4 +57,8 @@ export class UsuarioService {
       };
     }
   }
+
+  async findOne(email: string): Promise<Usuario | undefined> {
+    return this.usuarioRepository.findOne({ where: { email: email } });
+  }
 }

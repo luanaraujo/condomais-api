@@ -5,7 +5,10 @@ import {
   Post,
   HttpException,
   HttpStatus,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Usuario } from './usuario.entity';
 import { UsuarioService } from './usuario.service';
 import { UsuarioCadastrarDto } from './dto/usuario.create.dto';
@@ -31,5 +34,10 @@ export class UsuarioController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+  @UseGuards(AuthGuard('local'))
+  @Post('login')
+  async login(@Request() req) {
+    return req.user;
   }
 }
