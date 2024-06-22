@@ -27,10 +27,13 @@ export class UsuarioController {
   @Get()
   async getPerfil(@Request() req): Promise<any> {
     try {
-      const userId = req.user.id; // Obtém o ID do usuário autenticado
-      const usuario = await this.usuarioService.findById(userId); // Busca o usuário pelo ID
+      const userId = req.user.userId; // Correção aqui
+      console.log('ID do usuário autenticado:', userId); // Adicione este log
+      const usuario = await this.usuarioService.findById(userId);
+      console.log('Dados do usuário encontrados:', usuario); // Adicione este log
       return usuario;
     } catch (error) {
+      console.error('Erro ao buscar perfil do usuário:', error.message); // Adicione este log
       throw new HttpException(
         {
           errorMessage: 'Erro ao buscar perfil do usuário',
@@ -62,9 +65,9 @@ export class UsuarioController {
 
   @Post('login-token')
   async loginToken(@Request() req, @Body() data) {
-    console.log(data);
     return this.authService.loginToken(data.token);
   }
+
   @UseGuards(JwtAuthGuard)
   @Put()
   async atualizarPerfil(
@@ -72,7 +75,7 @@ export class UsuarioController {
     @Body() body: { nome: string; email: string },
   ): Promise<any> {
     try {
-      const userId = req.user.id;
+      const userId = req.user.userId; // Correção aqui
       const result = await this.usuarioService.atualizarPerfil(userId, body);
       return result;
     } catch (error) {

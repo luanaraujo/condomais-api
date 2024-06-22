@@ -1,9 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { ResultadoDto } from 'src/dto/resultado.dto';
 import { Repository } from 'typeorm';
 import { Servico } from './servico.entity';
 import { ServicoCadastrarDto } from './dto/servico.cadastrar.dto';
 import { Usuario } from 'src/usuario/usuario.entity';
+import { ResultadoDto } from 'src/dto/resultado.dto';
 
 @Injectable()
 export class ServicoService {
@@ -25,19 +25,20 @@ export class ServicoService {
       .then(() => {
         return <ResultadoDto>{
           status: true,
-          mensagem: 'Serviço cadastrado com sucesso',
+          mensagem: 'Lembrete cadastrado com sucesso',
         };
       })
       .catch(() => {
         return <ResultadoDto>{
           status: false,
-          mensagem: 'Houve um erro ao cadastrar o serviço',
+          mensagem: 'Houve um erro ao cadastrar o lembrete',
         };
       });
   }
 
-  async listar(): Promise<Servico[]> {
-    // Lógica para listar todos os serviços
-    return this.servicoRepository.find();
+  async listar(usuarioId: number): Promise<Servico[]> {
+    return this.servicoRepository.find({
+      where: { usuario: { id: usuarioId } },
+    });
   }
 }

@@ -19,7 +19,6 @@ export class UsuarioService {
   }
 
   async cadastrar(data: UsuarioCadastrarDto): Promise<ResultadoDto> {
-    // Verificar se o CPF já está cadastrado
     const cpfExistente = await this.usuarioRepository.findOne({
       where: { cpf: data.cpf },
     });
@@ -27,13 +26,9 @@ export class UsuarioService {
       this.logger.error(
         `Tentativa de cadastro com CPF já existente: ${data.cpf}`,
       );
-      return {
-        status: false,
-        mensagem: 'CPF já cadastrado',
-      };
+      return { status: false, mensagem: 'CPF já cadastrado' };
     }
 
-    // Caso o CPF não esteja cadastrado, procede com o cadastro
     const usuario = new Usuario();
     usuario.email = data.email;
     usuario.nome = data.nome;
@@ -45,10 +40,7 @@ export class UsuarioService {
       this.logger.log('Tentando salvar o usuário:', usuario);
       await this.usuarioRepository.save(usuario);
       this.logger.log('Usuário salvo com sucesso');
-      return {
-        status: true,
-        mensagem: 'Usuário cadastrado com sucesso',
-      };
+      return { status: true, mensagem: 'Usuário cadastrado com sucesso' };
     } catch (error) {
       this.logger.error('Erro ao salvar o usuário:', error);
       return {
@@ -59,12 +51,13 @@ export class UsuarioService {
   }
 
   async findById(id: number): Promise<Usuario | undefined> {
-    return this.usuarioRepository.findOne({ where: { id: id } }); // Aqui passamos apenas o ID como argumento
+    return this.usuarioRepository.findOne({ where: { id: id } });
   }
 
   async findOne(email: string): Promise<Usuario | undefined> {
     return this.usuarioRepository.findOne({ where: { email: email } });
   }
+
   async atualizarPerfil(
     userId: number,
     { nome, email },
@@ -81,10 +74,7 @@ export class UsuarioService {
       usuario.email = email;
 
       await this.usuarioRepository.save(usuario);
-      return {
-        status: true,
-        mensagem: 'Perfil atualizado com sucesso',
-      };
+      return { status: true, mensagem: 'Perfil atualizado com sucesso' };
     } catch (error) {
       this.logger.error('Erro ao atualizar perfil:', error);
       return {
