@@ -12,9 +12,7 @@ Integrantes:
 - Leonardo Nunes Zequini
 - Luan Gonaçalves de Araujo
 
-O aplicativo Condo+ foi pensado para auxiliar a administração interna de
-um condomínio, facilitando o controle do síndico, a comunicação e convivência
-de maneira geral
+O aplicativo Condo+ foi pensado para auxiliar a comunicação dentro do condomínio. Pode ser usado para fazer postagens de avisos, notícias, etc e também criar lembretes pessoais de contas, tarefas, entre outros, para facilitar o dia a dia.
 
 ## 🚀 Tecnologias
 
