@@ -7,20 +7,38 @@ import {
   HttpStatus,
   UseGuards,
   Request,
+  Put,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Usuario } from './usuario.entity';
 import { UsuarioService } from './usuario.service';
 import { UsuarioCadastrarDto } from './dto/usuario.create.dto';
 import { ResultadoDto } from 'src/dto/resultado.dto';
+import { AuthService } from 'src/auth/auth.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('usuario')
 export class UsuarioController {
-  constructor(private readonly usuarioService: UsuarioService) {}
+  constructor(
+    private readonly usuarioService: UsuarioService,
+    private authService: AuthService,
+  ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  async listar(): Promise<Usuario[]> {
-    return this.usuarioService.listar();
+  async getPerfil(@Request() req): Promise<any> {
+    try {
+      const userId = req.user.id; // Obtém o ID do usuário autenticado
+      const usuario = await this.usuarioService.findById(userId); // Busca o usuário pelo ID
+      return usuario;
+    } catch (error) {
+      throw new HttpException(
+        {
+          errorMessage: 'Erro ao buscar perfil do usuário',
+          error: error.message,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Post()
@@ -35,9 +53,36 @@ export class UsuarioController {
       );
     }
   }
+
   @UseGuards(AuthGuard('local'))
   @Post('login')
   async login(@Request() req) {
-    return req.user;
+    return this.authService.login(req.user);
+  }
+
+  @Post('login-token')
+  async loginToken(@Request() req, @Body() data) {
+    console.log(data);
+    return this.authService.loginToken(data.token);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Put()
+  async atualizarPerfil(
+    @Request() req,
+    @Body() body: { nome: string; email: string },
+  ): Promise<any> {
+    try {
+      const userId = req.user.id;
+      const result = await this.usuarioService.atualizarPerfil(userId, body);
+      return result;
+    } catch (error) {
+      throw new HttpException(
+        {
+          errorMessage: 'Erro ao atualizar perfil do usuário',
+          error: error.message,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

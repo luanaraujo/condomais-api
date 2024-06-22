@@ -58,7 +58,39 @@ export class UsuarioService {
     }
   }
 
+  async findById(id: number): Promise<Usuario | undefined> {
+    return this.usuarioRepository.findOne({ where: { id: id } }); // Aqui passamos apenas o ID como argumento
+  }
+
   async findOne(email: string): Promise<Usuario | undefined> {
     return this.usuarioRepository.findOne({ where: { email: email } });
+  }
+  async atualizarPerfil(
+    userId: number,
+    { nome, email },
+  ): Promise<ResultadoDto> {
+    try {
+      const usuario = await this.usuarioRepository.findOne({
+        where: { id: userId },
+      });
+      if (!usuario) {
+        throw new Error('Usuário não encontrado');
+      }
+
+      usuario.nome = nome;
+      usuario.email = email;
+
+      await this.usuarioRepository.save(usuario);
+      return {
+        status: true,
+        mensagem: 'Perfil atualizado com sucesso',
+      };
+    } catch (error) {
+      this.logger.error('Erro ao atualizar perfil:', error);
+      return {
+        status: false,
+        mensagem: 'Houve um erro ao atualizar o perfil do usuário',
+      };
+    }
   }
 }
