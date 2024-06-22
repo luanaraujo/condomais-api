@@ -1,6 +1,8 @@
-# Condo+
+# Condo+ API
 
 Esse repositório traz o Backend do Projeto desenvolvido para a disciplina de Extensão do curso de A.D.S, da UNIFIL.
+A API criada para o projeto, trata o Login, Cadastro, Listagem e atualização de usuário com validações de AuthGuard e também estratégia JWT para armazenamento de tokens e login automático, bcrypt para criptografar senhas.
+Cadastro de Lembretes e visualização dos lembretes
 
 Integrantes:
 
